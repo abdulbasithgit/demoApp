@@ -77,21 +77,20 @@
         </mat-grid-tile>
 
         <mat-grid-tile>
-          <label style="font-weight: 100;">Age</label>&nbsp;&nbsp;<mat-slider
-          thumbLabel
-          [displayWith]="formatLabel"
-          tickInterval="1000"
-          step="1"
-          min="20"
-          max="60"
-          aria-label="units" formControlName="age"></mat-slider>
-          <div><span style="left: -129px;position: relative;top: 20px;">20</span><span style="position: relative;left: -30px;top: 20px;">60</span></div>
+          <label style="font-weight: 100;">Age</label>&nbsp;&nbsp;<mat-slider thumbLabel [displayWith]="formatLabel"
+            tickInterval="1000" step="1" min="20" max="60" aria-label="units" formControlName="age"></mat-slider>
+          <div><span style="left: -129px;position: relative;top: 20px;">20</span><span
+              style="position: relative;left: -30px;top: 20px;">60</span></div>
         </mat-grid-tile>
 
         <mat-grid-tile>
           <div class="text-inside">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="State" formControlName="state" required>
+              <mat-select formControlName="state" placeholder="State">
+                <mat-option *ngFor="let state of allstate" [value]="state.viewValue">
+                  {{state.viewValue}}
+                </mat-option>
+              </mat-select>
               <mat-error *ngIf="addUserForm.controls.state.hasError('required')">
                 Please enter State
               </mat-error>
@@ -105,7 +104,11 @@
         <mat-grid-tile>
           <div class="text-inside">
             <mat-form-field class="example-full-width">
-              <input matInput placeholder="Country" formControlName="country" required>
+              <mat-select formControlName="country" placeholder="Country">
+                <mat-option *ngFor="let country of allcountry" [value]="country.name">
+                  {{country.name}}
+                </mat-option>
+              </mat-select>
               <mat-error *ngIf="addUserForm.controls.country.hasError('required')">
                 Please enter Country
               </mat-error>
