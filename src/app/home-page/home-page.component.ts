@@ -16,7 +16,7 @@ export class HomePageComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(UserRegistrationComponent,{
-      width: '640px',disableClose: true 
+      width: '800px',disableClose: true,maxHeight: '100vh'
     });
   }
 
