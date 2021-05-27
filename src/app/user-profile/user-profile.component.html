@@ -8,8 +8,9 @@
             <img [src]="imagePath" width="210" height="200">
           </div><br />
           <div class="row">
-            <button mat-raised-button color="primary"> Edit Photo</button> &nbsp;&nbsp;
-            <button mat-raised-button color="warn"> Edit Profile</button>
+            <button mat-raised-button color="primary" (click)="fileInput.click()"> Edit Photo</button>
+            <input style="display: none;" accept=".png, .jpg, .jpeg" #fileInput (change)="uploadFile($event)" type="file" id="file"> &nbsp;&nbsp;
+            <button mat-raised-button color="warn" (click)="openDialog()"> Edit Profile</button>
           </div>
         </div>
         <div class="col-md-8">

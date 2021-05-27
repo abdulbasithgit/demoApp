@@ -11,8 +11,9 @@
             <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" #fileInput (change)="uploadFile($event)" />
           </div>
           <div class="avatar-preview">
-            <div id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'">
+            <div *ngIf="updatefileImage" id="imagePreview" [style.backgroundImage]="'url('+ imageUrl +')'">
             </div>
+            <img *ngIf="!updatefileImage" [src]="imagePath" width="105" height="105">
           </div>
         </div>
       </div>

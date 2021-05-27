@@ -6,6 +6,8 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
 import { DataServiceService } from '../common/data-service.service';
 import { Router } from '@angular/router';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { DomSanitizer } from '@angular/platform-browser';
+
 export interface Tag {
   name: string;
 }
@@ -39,7 +41,10 @@ export class UserRegistrationComponent implements OnInit {
   ageValue: number = 20;
   allcountry: any = [];
   allstate: State[] = [];
-  constructor(private fb: FormBuilder, private cd: ChangeDetectorRef, public dialog: MatDialog, private dataService: DataServiceService, public route: Router) {}
+  updateUserInfo: any;
+  imagePath: any;
+  updatefileImage: boolean = true;
+  constructor(private _sanitizer: DomSanitizer, private fb: FormBuilder, private cd: ChangeDetectorRef, public dialog: MatDialog, private dataService: DataServiceService, public route: Router) {}
 
   ngOnInit(): void {
     this.dataService.getJsonValue("Allcountry").subscribe((value: any) => {
@@ -48,18 +53,35 @@ export class UserRegistrationComponent implements OnInit {
     this.dataService.getJsonValue("AllState").subscribe((value: any) => {
       this.allstate = value.state;
     });
-    this.addUserForm = this.fb.group({
-      file: [null],
-      firstname: ['', [Validators.required, Validators.pattern('[a-zA-Z]+([a-zA-Z ]+)*')]],
-      lastname: ['', [Validators.required, Validators.pattern('[a-zA-Z]+([a-zA-Z ]+)*')]],
-      email: ['', [Validators.required, Validators.email]],
-      phonenumber: ['', []],
-      age: [this.ageValue, []],
-      state: ['', []],
-      country: ['', []],
-      address: ['', []],
-      tags: [this.Tags, []],
+    this.dataService.getNewUserInfo().subscribe(info => {
+      this.updateUserInfo = info;
+      if(this.updateUserInfo.age !== '') {
+         this.ageValue = this.updateUserInfo.age;
+      }
+      if(this.updateUserInfo.tags.length > 0) {
+        this.Tags = this.updateUserInfo.tags;
+      }
+      if(this.updateUserInfo.file !== '') {
+        this.imagePath = this._sanitizer.bypassSecurityTrustResourceUrl(this.updateUserInfo.file);
+        this.updatefileImage = false;
+      } else {
+        this.imagePath = this.imageUrl;
+        this.updatefileImage = true;
+      }
+      this.addUserForm = this.fb.group({
+        file: [this.imagePath],
+        firstname: [this.updateUserInfo.firstname, [Validators.required, Validators.pattern('[a-zA-Z]+([a-zA-Z ]+)*')]],
+        lastname: [this.updateUserInfo.lastname, [Validators.required, Validators.pattern('[a-zA-Z]+([a-zA-Z ]+)*')]],
+        email: [this.updateUserInfo.email, [Validators.required, Validators.email]],
+        phonenumber: [this.updateUserInfo.phonenumber, []],
+        age: [this.ageValue, []],
+        state: [this.updateUserInfo.state, []],
+        country: [this.updateUserInfo.country, []],
+        address: [this.updateUserInfo.address, []],
+        tags: [this.Tags, []],
+      });
     });
+
     this.breakpoint = window.innerWidth <= 600 ? 1 : 2;
   }
 
@@ -108,6 +130,7 @@ export class UserRegistrationComponent implements OnInit {
         this.editFile = false;
         this.removeUpload = true;
       }
+      this.updatefileImage = true;
       // ChangeDetectorRef since file is loading outside the zone
       this.cd.markForCheck();
     }
